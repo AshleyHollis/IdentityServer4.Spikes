@@ -3,9 +3,11 @@
 
 
 using System;
+using IdentityServer4;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityServer
 {
@@ -36,6 +38,14 @@ namespace IdentityServer
             {
                 throw new Exception("need to configure key material");
             }
+
+            services.Configure<IISOptions>(iis =>
+            {
+                iis.AuthenticationDisplayName = "Windows";
+                iis.AutomaticAuthentication = false;
+            });
+
+            services.AddAuthentication();           
         }
 
         public void Configure(IApplicationBuilder app)

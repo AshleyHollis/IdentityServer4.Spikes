@@ -17,7 +17,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IdentityServer
+namespace IdentityServer4.Quickstart.UI
 {
     /// <summary>
     /// This sample controller implements a typical login/logout/provision workflow for local and external accounts.
@@ -221,6 +221,11 @@ namespace IdentityServer
             return View("LoggedOut", vm);
         }
 
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
 
 
         /*****************************************/
@@ -229,7 +234,7 @@ namespace IdentityServer
         private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
         {
             var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-            if (context?.IdP != null)
+            if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
             {
                 var local = context.IdP == IdentityServer4.IdentityServerConstants.LocalIdentityProvider;
 
