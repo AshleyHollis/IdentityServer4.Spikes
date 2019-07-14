@@ -73,6 +73,10 @@ namespace IdentityServer
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile
                     }
+
+                    //mvc.IdentityProviderRestrictions.Add("AAD");
+                    //mvc.RequireConsent = false;
+                    //mvc.EnableLocalLogin = false;
                 }
             };
         }
