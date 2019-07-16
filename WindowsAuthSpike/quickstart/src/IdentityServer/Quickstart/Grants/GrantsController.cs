@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
+using System.Security.Principal;
+using Microsoft.AspNetCore.Authentication;
 
 namespace IdentityServer4.Quickstart.UI
 {
@@ -43,6 +45,18 @@ namespace IdentityServer4.Quickstart.UI
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            // This code is to force that there is always a WindowsIdentity available so that it can be used to impersonate calls to downstream systems.
+            var result = await HttpContext.AuthenticateAsync(AccountOptions.WindowsAuthenticationSchemeName);
+            if (result?.Principal is WindowsPrincipal wp)
+            {
+                var wi = wp.Identity as WindowsIdentity;
+                var groups = wi.Groups.Translate(typeof(NTAccount));
+            }
+            else
+            {
+                return RedirectToAction("Challenge", "External", new { provider = AccountOptions.WindowsAuthenticationSchemeName, returnUrl = "/grants/Index" });
+            }
+
             return View("Index", await BuildViewModelAsync());
         }
 
